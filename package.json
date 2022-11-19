@@ -2,10 +2,10 @@
   "name": "chrome-extension-tab-manager",
   "version": "0.0.1",
   "description": "Chrome extension that deduplicates and removes old tabs",
-  "main": "index.html",
+  "main": "src/index.html",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp manifest.json dist/",
     "preview": "vite preview"
   },
   "keywords": [
@@ -16,6 +16,7 @@
   "author": "Jay Chiarella",
   "license": "MIT",
   "devDependencies": {
+    "@types/node": "^18.11.9",
     "vite": "^3.2.4"
   }
 }
