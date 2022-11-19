@@ -5,6 +5,7 @@
   "action": {
     "default_popup": "popup.html"
   },
-  "permissions": ["tabs", "storage"],
-  "description": "Deduplicate tabs"
+  "permissions": ["tabs", "storage", "scripting"],
+  "description": "Deduplicate tabs",
+  "host_permissions": ["<all_urls>"]
 }

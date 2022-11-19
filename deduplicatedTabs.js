@@ -11,7 +11,6 @@ async function findAndRemoveDuplicateTabs() {
     if (existingTabId) {
       dedupedTabUrls.add(tab.url);
       await chrome.tabs.remove(existingTabId);
-      console.log(`removing deduplicate tab with url "${tab.url}"`);
     }
     tabSet.set(tab.url, tab.id);
   }

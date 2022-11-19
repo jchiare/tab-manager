@@ -28,3 +28,16 @@ p {
 #dedup-amount {
   margin: 0.5rem;
 }
+
+.deduplication-section {
+  background-color: rgb(198, 224, 224);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.oldTabs-section {
+  background-color: rgb(201, 224, 198);
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
