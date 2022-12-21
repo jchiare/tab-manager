@@ -2,7 +2,7 @@
   "name": "chrome-extension-tab-manager",
   "version": "0.0.1",
   "description": "Chrome extension that deduplicates and removes old tabs",
-  "main": "src/index.html",
+  "main": "index.html",
   "type": "module",
   "scripts": {
     "dev": "vite",
