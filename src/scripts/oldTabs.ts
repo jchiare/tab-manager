@@ -5,7 +5,7 @@ async function getAllTabsIdsOfWindow() {
     return tabs.map(tab => tab.id);
 }
 
-function executionFunction() {
+function scriptingFunction() {
     document.addEventListener('visibilitychange', function () {
         const now = new Date();
         if (document.hidden) {
@@ -26,23 +26,17 @@ function executionFunction() {
         // @ts-expect-error
         console.log('doc time last accessed after : ', document.dateTimeLastAccessed);
     });
-
-    return document.title;
 }
 
 async function getOldTabs() {
     const tabIds = await getAllTabsIdsOfWindow();
 
-    console.log('tab ids: ', tabIds);
-    let scriptingResult = [];
-
     for (const tabId of tabIds) {
         if (tabId) {
-            let result: string | chrome.scripting.InjectionResult<any>[] = ' .. skipping empty tab .. ';
             try {
-                result = await chrome.scripting.executeScript({
+                await chrome.scripting.executeScript({
                     target: { tabId },
-                    func: executionFunction
+                    func: scriptingFunction
                 });
             } catch (error) {
                 if (typeof error === 'string' && error.includes('Error: Cannot access a chrome:// URL')) {
@@ -50,11 +44,8 @@ async function getOldTabs() {
                     return;
                 }
             }
-            scriptingResult.push(result);
         }
     }
-
-    console.log('scripting results:', scriptingResult);
 }
 
 const oldTabsBtn = document.getElementById('oldTabs-btn')!;
