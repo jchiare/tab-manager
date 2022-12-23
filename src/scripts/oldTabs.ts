@@ -6,17 +6,14 @@ async function getAllTabsIdsOfWindow() {
 }
 
 function executionFunction() {
-    const now = new Date();
-
     document.addEventListener('visibilitychange', function () {
+        const now = new Date();
         if (document.hidden) {
-            console.log('The webpage is no longer visible.');
             // @ts-expect-error
             document.secondsSinceLastAccess = document.dateTimeLastAccessed ? (now.getTime() - document.dateTimeLastAccessed.getTime()) / 1000 : 0;
             // @ts-expect-error
             document.dateTimeLastAccessed = now;
         } else {
-            console.log('The webpage is now visible.');
             // @ts-expect-error
             document.secondsSinceLastAccess = document.dateTimeLastAccessed ? (now.getTime() - document.dateTimeLastAccessed.getTime()) / 1000 : 0;
             // @ts-expect-error
@@ -31,12 +28,6 @@ function executionFunction() {
     });
 
     return document.title;
-}
-
-function executionCallback(injectionResults: any) {
-    for (const frameResult of injectionResults) {
-        console.log('Frame Title: ' + frameResult.result);
-    }
 }
 
 async function getOldTabs() {
