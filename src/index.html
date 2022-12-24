@@ -1,52 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./css/popup.css" />
-  </head>
-  <body>
-    <!--
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="./css/popup.css" />
+    </head>
+    <body>
+        <!--
 
       Template section
       Only used to build HTML elements using JS
 
     -->
-    <template id="deduplicate-number">
-      <div>
-        <p id="dedup-amount"></p>
-      </div>
-    </template>
+        <template id="deduplicate-number">
+            <div>
+                <p id="dedup-amount"></p>
+            </div>
+        </template>
 
-    <template id="deduplicate-urls">
-      <li id="deduped-url-value"></li>
-    </template>
-    <!--
+        <template id="deduplicate-urls">
+            <li id="deduped-url-value"></li>
+        </template>
+        <!--
 
     End Template section
 
     -->
 
-    <h1>Tab Cleaner</h1>
+        <h1>Tab Cleaner</h1>
 
-    <section class="deduplication-section">
-      <button id="deduplicate-btn">Deduplicate</button>
-      <div id="dedup-result-section">
-        <div id="deduplicated-result"></div>
-        <ul id="deduped-urls-location"></ul>
-      </div>
-    </section>
+        <section class="deduplication-section">
+            <button id="deduplicate-btn">Deduplicate</button>
+            <div id="dedup-result-section">
+                <div id="deduplicated-result"></div>
+                <ul id="deduped-urls-location"></ul>
+            </div>
+        </section>
 
-    <section class="oldTabs-section">
-      <button id="oldTabs-btn">Remove Old Tabs</button>
-      <div id="dedup-result-section">
-        <div id="deduplicated-result"></div>
-        <ul id="deduped-urls-location"></ul>
-      </div>
-    </section>
+        <section class="tabTimer-section">
+            <button id="tabTimer-btn">Add Tab Timer</button>
+        </section>
 
-    <script src="./scripts/deduplicatedTabs.ts" type="module"></script>
-    <script src="./scripts/oldTabs.ts" type="module"></script>
-  </body>
+        <section class="tabTimer-section">
+            <button id="getOldTabs-btn">Get Old Tabs</button>
+        </section>
+
+        <script src="./scripts/deduplicatedTabs.ts" type="module"></script>
+        <script src="./scripts/tabTimer.ts" type="module"></script>
+        <script src="./scripts/getOldTabs.ts" type="module"></script>
+    </body>
 </html>

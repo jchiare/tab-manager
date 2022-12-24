@@ -6,29 +6,28 @@ async function getAllTabsIdsOfWindow() {
 }
 
 function scriptingFunction() {
+    // @ts-expect-error
+    document.secondsSinceLastAccess = 9999;
+
     document.addEventListener('visibilitychange', function () {
         const now = new Date();
-        if (document.hidden) {
+
+        if (document.visibilityState === 'visible') {
             // @ts-expect-error
             document.secondsSinceLastAccess = document.dateTimeLastAccessed ? (now.getTime() - document.dateTimeLastAccessed.getTime()) / 1000 : 0;
             // @ts-expect-error
             document.dateTimeLastAccessed = now;
-        } else {
+
+            console.log('document visiiblity: ', document.visibilityState);
             // @ts-expect-error
-            document.secondsSinceLastAccess = document.dateTimeLastAccessed ? (now.getTime() - document.dateTimeLastAccessed.getTime()) / 1000 : 0;
+            console.log('seconds since last access: ', document.secondsSinceLastAccess);
             // @ts-expect-error
-            document.dateTimeLastAccessed = now;
+            console.log('doc time last accessed after : ', document.dateTimeLastAccessed);
         }
-
-        // @ts-expect-error
-        console.log('seconds since last access: ', document.secondsSinceLastAccess);
-
-        // @ts-expect-error
-        console.log('doc time last accessed after : ', document.dateTimeLastAccessed);
     });
 }
 
-async function getOldTabs() {
+async function addTimerToTabs() {
     const tabIds = await getAllTabsIdsOfWindow();
 
     for (const tabId of tabIds) {
@@ -48,5 +47,5 @@ async function getOldTabs() {
     }
 }
 
-const oldTabsBtn = document.getElementById('oldTabs-btn')!;
-oldTabsBtn.addEventListener('click', getOldTabs);
+const tabTimerBtn = document.getElementById('tabTimer-btn')!;
+tabTimerBtn.addEventListener('click', addTimerToTabs);
