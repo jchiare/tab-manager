@@ -26,7 +26,7 @@ function oldTabsScriptingFunction() {
     return secondsSince > 10;
 }
 
-async function getOldTabs() {
+async function removeOldTabs() {
     const tabIds = await getAllTabsIdsOfWindowExceptActive();
     chrome.tabs.onActivated.addListener(handleOnTabActivated);
 
@@ -51,5 +51,5 @@ async function getOldTabs() {
     }
 }
 
-const getOldTabsBtn = document.getElementById('getOldTabs-btn')!;
-getOldTabsBtn.addEventListener('click', getOldTabs);
+const removeOldTabsBtn = document.getElementById('removeOldTabs-btn')!;
+removeOldTabsBtn.addEventListener('click', removeOldTabs);

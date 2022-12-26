@@ -3,14 +3,14 @@ async function getCurrentTab(activeInfo: chrome.tabs.TabActiveInfo) {
     const { url } = currentTab;
 
     if (!url) {
-        throw new Error('Missing url');
+        return;
     }
-    const data = await chrome.storage.sync.get(url);
+    const data = await chrome.storage.local.get(url);
     if (data.url) {
         console.log(`found data "${JSON.stringify(data)}" from url "${url}"`);
     } else {
-        console.log(await chrome.storage.sync.get(null));
-        await chrome.storage.sync.set({ [url]: 'hye' });
+        console.log(await chrome.storage.local.get(null));
+        await chrome.storage.local.set({ [url]: 'hye' });
     }
     return currentTab;
 }

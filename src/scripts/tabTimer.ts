@@ -1,41 +1,37 @@
 async function getAllTabsIdsOfWindow() {
     const queryOptions = { currentWindow: true };
-    // `tab` will either be a `tabs.Tab` instance or `undefined`.
     const tabs = await chrome.tabs.query(queryOptions);
     return tabs.map(tab => tab.id);
 }
 
-function scriptingFunction() {
-    // @ts-expect-error
-    document.secondsSinceLastAccess = 9999;
+async function scriptingFunction(args: number[]) {
+    const tabId = args[0];
 
-    document.addEventListener('visibilitychange', function () {
-        const now = new Date();
-
-        if (document.visibilityState === 'visible') {
-            // @ts-expect-error
-            document.secondsSinceLastAccess = document.dateTimeLastAccessed ? (now.getTime() - document.dateTimeLastAccessed.getTime()) / 1000 : 0;
-            // @ts-expect-error
-            document.dateTimeLastAccessed = now;
-
-            console.log('document visiiblity: ', document.visibilityState);
-            // @ts-expect-error
-            console.log('seconds since last access: ', document.secondsSinceLastAccess);
-            // @ts-expect-error
-            console.log('doc time last accessed after : ', document.dateTimeLastAccessed);
+    document.addEventListener('visibilitychange', async function () {
+        const now = Date.now();
+        if (document.hidden) {
+            await chrome.storage.local.set({ [document.URL]: now });
+            const storageData = await chrome.storage.local.get(document.URL);
+            console.log('storageData: ', storageData);
+        } else {
+            console.log('doc not hidden');
         }
     });
 }
 
 async function addTimerToTabs() {
+    console.log('running add timer');
     const tabIds = await getAllTabsIdsOfWindow();
 
     for (const tabId of tabIds) {
+        // tabId can be undefined for some reason
+        // .. on new page maybe?
         if (tabId) {
             try {
                 await chrome.scripting.executeScript({
                     target: { tabId },
-                    func: scriptingFunction
+                    func: scriptingFunction,
+                    args: [[tabId]]
                 });
             } catch (error) {
                 if (typeof error === 'string' && error.includes('Error: Cannot access a chrome:// URL')) {
@@ -47,5 +43,4 @@ async function addTimerToTabs() {
     }
 }
 
-const tabTimerBtn = document.getElementById('tabTimer-btn')!;
-tabTimerBtn.addEventListener('click', addTimerToTabs);
+addTimerToTabs();
