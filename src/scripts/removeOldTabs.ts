@@ -1,17 +1,29 @@
+type TabsInStorage = {
+    [key: string]: string;
+};
+
 function handleOnTabActivated(activeInfo: chrome.tabs.TabActiveInfo) {
     console.log('tabId: ', activeInfo.tabId);
 }
 
+const memoize = {};
 async function getAllTabsIdsOfWindowExceptActive() {
     const queryOptions = { currentWindow: true };
-    // `tab` will either be a `tabs.Tab` instance or `undefined`.
     const tabs = await chrome.tabs.query(queryOptions);
     return tabs.filter(tab => !tab.active).map(tab => tab.id);
 }
 
-function oldTabsScriptingFunction() {
-    console.log('dont do anything');
+async function getAllDataFromStorage() {
+    return chrome.storage.local.get(null);
+}
 
+const HOUR_IN_SECONDS = 60 * 60;
+function getAllOldTabs(seconds = HOUR_IN_SECONDS, tabs: any) {}
+
+async function oldTabsScriptingFunction() {
+    const allData = await getAllDataFromStorage();
+    console.log(allData);
+    console.log(JSON.stringify(allData));
     return 'hey';
 }
 

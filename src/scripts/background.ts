@@ -20,5 +20,6 @@ async function getCurrentTab(activeInfo: chrome.tabs.TabActiveInfo) {
 
 chrome.tabs.onActivated.addListener(async activeInfo => {
     const result = await getCurrentTab(activeInfo);
+    console.log(result);
 });
 console.log(`Started background service worker at ${new Date()}`);
