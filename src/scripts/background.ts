@@ -1,4 +1,4 @@
-async function getCurrentTab(activeInfo) {
+async function getCurrentTab(activeInfo: chrome.tabs.TabActiveInfo) {
     const currentTab = await chrome.tabs.get(activeInfo.tabId);
     console.log(currentTab);
     return currentTab;

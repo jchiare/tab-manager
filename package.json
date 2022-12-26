@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && tsc './src/scripts/background.ts' --outFile ./dist/background.js",
     "preview": "vite preview"
   },
   "keywords": [
@@ -19,6 +19,7 @@
   "devDependencies": {
     "@types/chrome": "^0.0.202",
     "@types/node": "^18.11.9",
+    "typescript": "^4.9.4",
     "vite": "^3.2.4"
   }
 }

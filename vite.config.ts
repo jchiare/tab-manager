@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
     root: 'src',
     build: {
-        sourcemap: 'inline',
+        sourcemap: true,
         outDir: '../dist',
         emptyOutDir: true,
         rollupOptions: {
@@ -12,5 +12,6 @@ export default defineConfig({
                 entry: resolve(__dirname, 'src/index.html')
             }
         }
-    }
+    },
+    esbuild: { exclude: './src/scripts/background.ts' }
 });
