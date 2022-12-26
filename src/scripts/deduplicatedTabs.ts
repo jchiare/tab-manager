@@ -4,20 +4,22 @@ const dedupResultDiv = document.getElementById('deduplicated-result')!;
 
 async function findAndRemoveDuplicateTabs() {
     const tabs = await chrome.tabs.query({ currentWindow: true });
-    const dedupedTabUrls = new Set();
+    const dedupedTabUrls = new Set<string>();
     const tabSet = new Map();
     for (const tab of tabs) {
-        const existingTabId = tabSet.get(tab.url);
-        if (existingTabId) {
-            dedupedTabUrls.add(tab.url);
-            await chrome.tabs.remove(existingTabId);
+        if (tab.url) {
+            const existingTabId = tabSet.get(tab.url);
+            if (existingTabId) {
+                dedupedTabUrls.add(tab.url);
+                await chrome.tabs.remove(existingTabId);
+            }
+            tabSet.set(tab.url, tab.id);
         }
-        tabSet.set(tab.url, tab.id);
     }
     return { numberOfDedupedTabs: tabs.length - tabSet.size, dedupedTabUrls };
 }
 
-async function addDedupedResultsToFrontend(numberOfDedupedTabs, dedupedTabUrls) {
+async function addDedupedResultsToFrontend(numberOfDedupedTabs: number, dedupedTabUrls: Set<string>) {
     const dedupNumbTemplate = document.getElementById('deduplicate-number') as HTMLMetaElement;
 
     // @ts-expect-error .. html elements are weird

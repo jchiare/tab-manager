@@ -19,7 +19,7 @@ async function scriptingFunction(args: number[]) {
     });
 }
 
-async function addTimerToTabs() {
+async function setTimerToTabs() {
     console.log('running add timer');
     const tabIds = await getAllTabsIdsOfWindow();
 
@@ -43,4 +43,4 @@ async function addTimerToTabs() {
     }
 }
 
-addTimerToTabs();
+setTimerToTabs();

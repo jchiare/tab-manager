@@ -10,20 +10,9 @@ async function getAllTabsIdsOfWindowExceptActive() {
 }
 
 function oldTabsScriptingFunction() {
-    const now = new Date();
-    // @ts-expect-error
-    console.log('from old tabs -- seconds since last access: ', document.secondsSinceLastAccess);
-    // @ts-expect-error
-    console.log('from old tabs -- doc time last accessed after : ', document.dateTimeLastAccessed);
+    console.log('dont do anything');
 
-    // @ts-expect-error
-    console.log('document title: "', document.title, '" value: ', document.dateTimeLastAccessed);
-
-    // @ts-expect-error
-    const secondsSince = document.dateTimeLastAccessed ? (now.getTime() - document.dateTimeLastAccessed.getTime()) / 1000 : 0;
-    console.log('seconds since: ', secondsSince);
-
-    return secondsSince > 10;
+    return 'hey';
 }
 
 async function removeOldTabs() {
