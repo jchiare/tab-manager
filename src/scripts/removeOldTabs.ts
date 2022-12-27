@@ -5,8 +5,8 @@ async function getActiveTab(): Promise<chrome.tabs.Tab> {
 }
 
 async function sendMessageToServiceWorker(args: any[]) {
-    const activeTabId = args[0];
-    const message = { unsafePassword: '!rweftesting9423', activeTabId };
+    const [activeTabId, expiryTime] = args;
+    const message = { activeTabId, expiryTime };
     await chrome.runtime.sendMessage(message);
 }
 
@@ -17,7 +17,7 @@ async function removeOldTabs() {
         await chrome.scripting.executeScript<any, any>({
             target: { tabId: activeTab.id },
             func: sendMessageToServiceWorker,
-            args: [[activeTab.id]]
+            args: [[activeTab.id, expiryTimeInput.value]]
         });
     } catch (error) {
         if (typeof error === 'string' && error.includes('Error: Cannot access a chrome:// URL')) {
@@ -29,3 +29,5 @@ async function removeOldTabs() {
 
 const removeOldTabsBtn = document.getElementById('removeOldTabs-btn')!;
 removeOldTabsBtn.addEventListener('click', removeOldTabs);
+
+const expiryTimeInput = <HTMLInputElement>document.getElementById('old-tab-expiration')!;

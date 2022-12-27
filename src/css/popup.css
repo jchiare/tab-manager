@@ -2,6 +2,7 @@ body {
     width: 20rem;
     text-align: center;
     margin: 1.5rem;
+    font-family: Arial, sans-serif;
 }
 
 ul {
@@ -52,4 +53,18 @@ p {
     background-color: rgb(201, 224, 198);
     padding: 1rem;
     border-radius: 0.5rem;
+}
+
+.expiration-section {
+    margin-top: 0.5rem;
+}
+
+#old-tab-expiration {
+    width: 70px;
+    font-size: 14px;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0.3rem;
 }

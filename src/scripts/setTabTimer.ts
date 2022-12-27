@@ -5,19 +5,20 @@ async function getTabIds() {
 }
 
 async function scriptingFunction(args: any[]) {
-    function createStorageValue(tabId: number) {
+    function createStorageValue(tabId: number, url: string) {
         const nowInSeconds = Math.floor(Date.now() / 1000);
         return {
             lastAccessTime: nowInSeconds,
-            tabId
+            tabId,
+            url
         };
     }
 
     document.addEventListener('visibilitychange', async function () {
         if (document.hidden) {
             const tabId = args[0];
-            const storageValue = createStorageValue(tabId);
-            await chrome.storage.local.set({ [document.URL]: storageValue });
+            const storageValue = createStorageValue(tabId, document.URL);
+            await chrome.storage.local.set({ [tabId]: storageValue });
         }
     });
 }
