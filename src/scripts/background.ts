@@ -1,25 +1,19 @@
-async function getCurrentTab(activeInfo: chrome.tabs.TabActiveInfo) {
-    const currentTab = await chrome.tabs.get(activeInfo.tabId);
-    const { url } = currentTab;
-
-    if (!url) {
+chrome.runtime.onMessage.addListener(async function (request) {
+    if (request.unsafePassword !== '!rweftesting9423') {
+        console.log('failed password check');
         return;
     }
-
-    console.log('background url: ', url);
-    const data = await chrome.storage.local.get(url);
-    console.log('data from background: ', data);
-
-    if (data[url]) {
-        console.log(`found data "${JSON.stringify(data)}" from url "${url}"`);
-    } else {
-        console.log(await chrome.storage.local.get(null));
+    const allData = await chrome.storage.local.get(null);
+    const nowInSeconds = Math.floor(Date.now() / 1000);
+    console.log('allData: ', allData);
+    let tabIdsToBeRemoved: number[] = [];
+    for (const [url, urlData] of Object.entries(allData)) {
+        if (nowInSeconds - urlData.lastAccessTime > 60) {
+            console.log('removed this url "', url, '" with this tabId "', urlData.tabId, '"');
+            tabIdsToBeRemoved.push(urlData.tabId);
+        }
     }
-    return currentTab;
-}
-
-chrome.tabs.onActivated.addListener(async activeInfo => {
-    const result = await getCurrentTab(activeInfo);
-    console.log(result);
+    await chrome.tabs.remove(tabIdsToBeRemoved);
 });
+
 console.log(`Started background service worker at ${new Date()}`);

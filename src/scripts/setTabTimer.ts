@@ -4,11 +4,20 @@ async function getAllTabsIdsOfWindow() {
     return tabs.map(tab => tab.id);
 }
 
-async function scriptingFunction() {
-    document.addEventListener('visibilitychange', async function () {
+async function scriptingFunction(args: any[]) {
+    function createStorageValue(tabId: number) {
         const nowInSeconds = Math.floor(Date.now() / 1000);
+        return {
+            lastAccessTime: nowInSeconds,
+            tabId
+        };
+    }
+
+    document.addEventListener('visibilitychange', async function () {
         if (document.hidden) {
-            await chrome.storage.local.set({ [document.URL]: nowInSeconds });
+            const tabId = args[0];
+            const storageValue = createStorageValue(tabId);
+            await chrome.storage.local.set({ [document.URL]: storageValue });
             const storageData = await chrome.storage.local.get(document.URL);
             console.log('storageData: ', storageData);
         } else {
@@ -28,7 +37,8 @@ async function setTimerToTabs() {
             try {
                 await chrome.scripting.executeScript({
                     target: { tabId },
-                    func: scriptingFunction
+                    func: scriptingFunction,
+                    args: [[tabId]]
                 });
             } catch (error) {
                 if (typeof error === 'string' && error.includes('Error: Cannot access a chrome:// URL')) {
