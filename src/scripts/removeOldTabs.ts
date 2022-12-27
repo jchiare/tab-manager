@@ -4,11 +4,10 @@ async function getActiveTab(): Promise<chrome.tabs.Tab> {
     return tabs[0];
 }
 
-async function oldTabsScriptingFunction() {
-    console.log('executing function');
-    const message = { unsafePassword: '!rweftesting9423' };
+async function sendMessageToServiceWorker(args: any[]) {
+    const activeTabId = args[0];
+    const message = { unsafePassword: '!rweftesting9423', activeTabId };
     await chrome.runtime.sendMessage(message);
-    return message;
 }
 
 async function removeOldTabs() {
@@ -17,7 +16,8 @@ async function removeOldTabs() {
     try {
         await chrome.scripting.executeScript<any, any>({
             target: { tabId: activeTab.id },
-            func: oldTabsScriptingFunction
+            func: sendMessageToServiceWorker,
+            args: [[activeTab.id]]
         });
     } catch (error) {
         if (typeof error === 'string' && error.includes('Error: Cannot access a chrome:// URL')) {

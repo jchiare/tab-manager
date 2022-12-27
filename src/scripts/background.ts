@@ -1,16 +1,19 @@
 chrome.runtime.onMessage.addListener(async function (request) {
-    if (request.unsafePassword !== '!rweftesting9423') {
+    const { unsafePassword, activeTabId } = request;
+    if (unsafePassword !== '!rweftesting9423') {
         console.log('failed password check');
         return;
     }
-    const allData = await chrome.storage.local.get(null);
+
     const nowInSeconds = Math.floor(Date.now() / 1000);
-    console.log('allData: ', allData);
     let tabIdsToBeRemoved: number[] = [];
-    for (const [url, urlData] of Object.entries(allData)) {
+    const allData = await chrome.storage.local.get(null);
+    for (const urlData of Object.values(allData)) {
         if (nowInSeconds - urlData.lastAccessTime > 60) {
-            console.log('removed this url "', url, '" with this tabId "', urlData.tabId, '"');
-            tabIdsToBeRemoved.push(urlData.tabId);
+            // dont remove active tab
+            if (activeTabId !== urlData.tabId) {
+                tabIdsToBeRemoved.push(urlData.tabId);
+            }
         }
     }
     await chrome.tabs.remove(tabIdsToBeRemoved);

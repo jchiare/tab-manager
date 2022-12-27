@@ -1,4 +1,4 @@
-async function getAllTabsIdsOfWindow() {
+async function getTabIds() {
     const queryOptions = { currentWindow: true };
     const tabs = await chrome.tabs.query(queryOptions);
     return tabs.map(tab => tab.id);
@@ -18,17 +18,12 @@ async function scriptingFunction(args: any[]) {
             const tabId = args[0];
             const storageValue = createStorageValue(tabId);
             await chrome.storage.local.set({ [document.URL]: storageValue });
-            const storageData = await chrome.storage.local.get(document.URL);
-            console.log('storageData: ', storageData);
-        } else {
-            console.log('doc not hidden');
         }
     });
 }
 
 async function setTimerToTabs() {
-    console.log('running add timer');
-    const tabIds = await getAllTabsIdsOfWindow();
+    const tabIds = await getTabIds();
 
     for (const tabId of tabIds) {
         // tabId can be undefined for some reason
