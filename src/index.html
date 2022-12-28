@@ -41,9 +41,14 @@
         <section class="tabTimer-section">
             <button id="removeOldTabs-btn">Remove Old Tabs</button>
             <div class="expiration-section">
-                <label for="old-tab-expiration">Remove stale tabs after </label>
-                <input type="number" name="old-tab-expiration" id="old-tab-expiration" min="0" />
-                <label for="old-tab-expiration"> seconds </label>
+                <label for="stale-tab-expiration">Remove stale tabs after </label>
+                <input type="number" name="stale-tab-expiration" id="stale-tab-expiration" min="0" />
+                <select name="stale-tab-time" id="stale-tab-time">
+                    <option value="seconds" selected>seconds</option>
+                    <option value="minutes">minutes</option>
+                    <option value="hours">hours</option>
+                    <option value="days">days</option>
+                </select>
             </div>
         </section>
 
