@@ -14,6 +14,10 @@ async function scriptingFunction(args: any[]) {
         };
     }
 
+    const tabId = args[0];
+    const storageValue = createStorageValue(tabId, document.URL);
+    await chrome.storage.local.set({ [tabId]: storageValue });
+
     document.addEventListener('visibilitychange', async function () {
         if (document.hidden) {
             const tabId = args[0];
