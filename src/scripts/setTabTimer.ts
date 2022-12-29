@@ -1,7 +1,8 @@
-async function getTabIds() {
+async function getValidTabIds() {
     const queryOptions = { currentWindow: true };
     const tabs = await chrome.tabs.query(queryOptions);
-    return tabs.map(tab => tab.id);
+    const validTabs = tabs.filter(tab => !tab?.url?.toLowerCase()?.includes('chrome://extensions'));
+    return validTabs.map(tab => tab.id);
 }
 
 async function scriptingFunction(args: any[]) {
@@ -20,7 +21,6 @@ async function scriptingFunction(args: any[]) {
 
     document.addEventListener('visibilitychange', async function () {
         if (document.hidden) {
-            const tabId = args[0];
             const storageValue = createStorageValue(tabId, document.URL);
             await chrome.storage.local.set({ [tabId]: storageValue });
         }
@@ -28,25 +28,14 @@ async function scriptingFunction(args: any[]) {
 }
 
 async function setTimerToTabs() {
-    const tabIds = await getTabIds();
+    const validTabIds = await getValidTabIds();
 
-    for (const tabId of tabIds) {
-        // tabId can be undefined for some reason
-        // .. on new page maybe?
-        if (tabId) {
-            try {
-                await chrome.scripting.executeScript({
-                    target: { tabId },
-                    func: scriptingFunction,
-                    args: [[tabId]]
-                });
-            } catch (error) {
-                if (typeof error === 'string' && error.includes('Error: Cannot access a chrome:// URL')) {
-                    console.log('skipping executing script on a new tab');
-                    return;
-                }
-            }
-        }
+    for (const tabId of validTabIds) {
+        await chrome.scripting.executeScript({
+            target: { tabId: tabId! },
+            func: scriptingFunction,
+            args: [[tabId]]
+        });
     }
 }
 

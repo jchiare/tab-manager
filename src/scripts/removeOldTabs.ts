@@ -1,32 +1,30 @@
-async function getActiveTab(): Promise<chrome.tabs.Tab> {
-    const queryOptions: chrome.tabs.QueryInfo = { active: true, currentWindow: true };
+function getSingleValidTab(tabs: chrome.tabs.Tab[]): chrome.tabs.Tab {
+    const validTabs = tabs.filter(tab => !tab.url?.toLowerCase().startsWith('chrome://') && tab.id);
+    const validActiveTab = validTabs.filter(tab => tab.active)[0];
+    return validActiveTab ?? validTabs[0];
+}
+
+async function getValidTab(): Promise<chrome.tabs.Tab> {
+    const queryOptions: chrome.tabs.QueryInfo = { currentWindow: true };
     const tabs = await chrome.tabs.query(queryOptions);
-    return tabs[0];
+    const validTab = getSingleValidTab(tabs);
+    return validTab;
 }
 
 async function sendMessageToServiceWorker(args: any[]) {
     const [activeTabId, expiryTime, timeRange] = args;
-    const message = { activeTabId, expiryTime };
+    const message = { activeTabId, expiryTime, timeRange };
     await chrome.runtime.sendMessage(message);
 }
 
 async function removeOldTabs() {
-    const activeTab = await getActiveTab();
-    if (!activeTab.id) return;
+    const validTab = await getValidTab();
 
-    try {
-        await chrome.scripting.executeScript<any, any>({
-            target: { tabId: activeTab.id },
-            func: sendMessageToServiceWorker,
-            args: [[activeTab.id, expiryTimeValueInput.value, expiryTimeRangeInput.value]]
-        });
-    } catch (error) {
-        if (typeof error === 'string' && error.includes('Error: Cannot access a chrome:// URL')) {
-            console.log('skipping executing script on a new tab');
-            return;
-        }
-        throw new Error(error);
-    }
+    await chrome.scripting.executeScript<any, any>({
+        target: { tabId: validTab.id! },
+        func: sendMessageToServiceWorker,
+        args: [[validTab.id, expiryTimeValueInput.value, expiryTimeRangeInput.value]]
+    });
 }
 
 const removeOldTabsBtn = document.getElementById('removeOldTabs-btn')!;
