@@ -1,7 +1,7 @@
 async function getValidTabIds() {
     const queryOptions = { currentWindow: true };
     const tabs = await chrome.tabs.query(queryOptions);
-    const validTabs = tabs.filter(tab => !tab?.url?.toLowerCase()?.includes('chrome://extensions'));
+    const validTabs = tabs.filter(tab => !tab?.url?.toLowerCase()?.includes('chrome://extensions') && tab.id);
     return validTabs.map(tab => tab.id);
 }
 
