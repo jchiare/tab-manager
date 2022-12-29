@@ -57,6 +57,7 @@ p {
 
 .expiration-section {
     margin-top: 0.5rem;
+    font-size: 14px;
 }
 
 #old-tab-expiration {
@@ -71,4 +72,35 @@ p {
 
 input[type='number'] {
     width: 70px;
+}
+
+.stale-text-explainer {
+    text-decoration: underline #000 dotted;
+    font-weight: bold;
+}
+
+.stale-text-explainer:hover {
+    cursor: help;
+}
+
+[help-text] {
+    position: relative;
+}
+
+[help-text]:before {
+    content: attr(help-text);
+    position: absolute;
+    left: 0;
+    top: 100%;
+    white-space: nowrap;
+    z-index: 20;
+    background-color: rgb(31, 31, 31);
+    color: #fff;
+    padding: 0.3rem;
+    visibility: hidden;
+    border-radius: 0.5rem;
+}
+
+[help-text]:hover:before {
+    visibility: visible;
 }
