@@ -21,7 +21,7 @@ async function removeExpiredTabs(message: any) {
     let tabIdsToBeRemoved: number[] = [];
 
     // loop through all urls in storage
-    const allUrls = await chrome.storage.local.get(null);
+    const allUrls = await chrome.storage.session.get(null);
     for (const singleUrlData of Object.values(allUrls)) {
         if (nowInSeconds - singleUrlData.lastAccessTime > expirySeconds) {
             // dont remove active tab
@@ -31,11 +31,19 @@ async function removeExpiredTabs(message: any) {
         }
     }
     await chrome.tabs.remove(tabIdsToBeRemoved);
-    await chrome.storage.local.remove(tabIdsToBeRemoved.map(tabId => tabId.toString()));
+    await chrome.storage.session.remove(tabIdsToBeRemoved.map(tabId => tabId.toString()));
 }
 
 chrome.runtime.onMessage.addListener(async function (request) {
     await removeExpiredTabs(request);
+});
+
+chrome.tabs.onRemoved.addListener(async tadId => {
+    try {
+        await chrome.storage.session.remove(tadId.toString());
+    } catch (error) {
+        // dont throw error
+    }
 });
 
 console.log(`Started background service worker at ${new Date()}`);

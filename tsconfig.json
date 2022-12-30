@@ -20,5 +20,5 @@
     "rootDir": "src",
     "outFile": "./dist/background.js"
   },
-  "files": ["./src/scripts/background.ts"]
+  "files": ["src/scripts/serviceWorker.ts"]
 }
