@@ -13,5 +13,5 @@ export default defineConfig({
             }
         }
     },
-    esbuild: { exclude: './src/scripts/background.ts' }
+    esbuild: { exclude: './src/scripts/background.ts', target: 'es6' }
 });

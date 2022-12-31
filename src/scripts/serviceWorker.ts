@@ -1,17 +1,13 @@
 function normalizeTimeToSeconds(timeRange: string, expiryTime: string): number {
     const expiryTimeAsNumber = parseInt(expiryTime, 10);
-    switch (timeRange.toLowerCase()) {
-        case 'seconds':
-            return expiryTimeAsNumber;
-        case 'minutes':
-            return expiryTimeAsNumber * 60;
-        case 'hours':
-            return expiryTimeAsNumber * 60 * 60;
-        case 'days':
-            return expiryTimeAsNumber * 60 * 60 * 24;
-        default:
-            return expiryTimeAsNumber;
-    }
+    const timeRangeConversionFactors = new Map<string, number>([
+        ['seconds', 1],
+        ['minutes', 60],
+        ['hours', 60 * 60],
+        ['days', 60 * 60 * 24]
+    ]);
+    const conversionFactor = timeRangeConversionFactors.get(timeRange.toLowerCase());
+    return conversionFactor ? conversionFactor * expiryTimeAsNumber : expiryTimeAsNumber;
 }
 
 async function removeExpiredTabs(message: any) {

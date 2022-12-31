@@ -1,14 +1,18 @@
-function getSingleValidTab(tabs: chrome.tabs.Tab[]): chrome.tabs.Tab {
+function getActiveValidTab(tabs: chrome.tabs.Tab[]): chrome.tabs.Tab | undefined {
     const validTabs = tabs.filter(tab => !tab.url?.toLowerCase().startsWith('chrome://') && tab.id);
-    const validActiveTab = validTabs.filter(tab => tab.active)[0];
-    return validActiveTab ?? validTabs[0];
+    return validTabs.find(tab => tab.active);
+}
+
+function getFirstValidTab(tabs: chrome.tabs.Tab[]): chrome.tabs.Tab {
+    const validTabs = tabs.filter(tab => !tab.url?.toLowerCase().startsWith('chrome://') && tab.id);
+    return validTabs[0];
 }
 
 async function getValidTab(): Promise<chrome.tabs.Tab> {
     const queryOptions: chrome.tabs.QueryInfo = { currentWindow: true };
     const tabs = await chrome.tabs.query(queryOptions);
-    const validTab = getSingleValidTab(tabs);
-    return validTab;
+    const activeTab = getActiveValidTab(tabs);
+    return activeTab ?? getFirstValidTab(tabs);
 }
 
 async function sendMessageToServiceWorker(args: any[]) {
