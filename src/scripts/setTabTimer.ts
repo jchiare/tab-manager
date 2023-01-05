@@ -1,3 +1,10 @@
+export type StoredTabValue = {
+    lastAccessTime: number;
+    tabId: number;
+    url: string;
+    niceDate?: string;
+};
+
 async function getValidTabIds() {
     const queryOptions = { currentWindow: true };
     const tabs = await chrome.tabs.query(queryOptions);
@@ -6,7 +13,11 @@ async function getValidTabIds() {
 }
 
 async function scriptingFunction(args: any[]) {
-    function createStorageValue(tabId: number, url: string) {
+    function isEmptyObject(obj: object) {
+        return Object.keys(obj).length === 0;
+    }
+
+    function createStorageValue(tabId: string, url: string) {
         const nowInSeconds = Math.floor(Date.now() / 1000);
         return {
             lastAccessTime: nowInSeconds,
@@ -15,9 +26,12 @@ async function scriptingFunction(args: any[]) {
         };
     }
 
-    const tabId = args[0];
-    const storageValue = createStorageValue(tabId, document.URL);
-    await chrome.storage.session.set({ [tabId]: storageValue });
+    const tabId: string = args[0].toString();
+    const tabIdInStorage = await chrome.storage.session.get(tabId);
+    if (!tabIdInStorage || isEmptyObject(tabIdInStorage)) {
+        const storageValue = createStorageValue(tabId, document.URL);
+        await chrome.storage.session.set({ [tabId]: storageValue });
+    }
 
     document.addEventListener('visibilitychange', async function () {
         if (document.hidden) {
