@@ -3,6 +3,7 @@ export type StoredTabValue = {
     tabId: number;
     url: string;
     niceDate?: string;
+    active: boolean;
 };
 
 async function getValidTabIds() {

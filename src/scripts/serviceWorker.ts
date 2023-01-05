@@ -10,11 +10,8 @@ function normalizeTimeToSeconds(timeRange: string, expiryTime: string): number {
     return conversionFactor ? conversionFactor * expiryTimeAsNumber : expiryTimeAsNumber;
 }
 
-async function removeExpiredTabs(message: any) {
-    const { activeTabId, expiryTime, timeRange } = message;
-    const expirySeconds = normalizeTimeToSeconds(timeRange, expiryTime);
-    const nowInSeconds = Math.floor(Date.now() / 1000);
-    let tabIdsToBeRemoved: number[] = [];
+async function getTabsToBeRemoved(nowInSeconds: number, expirySeconds: number, activeTabId: any): Promise<string[]> {
+    let tabIdsToBeRemoved: string[] = [];
 
     // loop through all urls in storage
     const allUrls = await chrome.storage.session.get(null);
@@ -26,19 +23,34 @@ async function removeExpiredTabs(message: any) {
             }
         }
     }
-    await chrome.tabs.remove(tabIdsToBeRemoved);
-    await chrome.storage.session.remove(tabIdsToBeRemoved.map(tabId => tabId.toString()));
+    return tabIdsToBeRemoved;
+}
+
+async function removeExpiredTabs(message: any) {
+    const { activeTabId, expiryTime, timeRange } = message;
+    const expirySeconds = normalizeTimeToSeconds(timeRange, expiryTime);
+    const nowInSeconds = Math.floor(Date.now() / 1000);
+
+    const tabIdsToBeRemoved = await getTabsToBeRemoved(nowInSeconds, expirySeconds, activeTabId);
+
+    if (tabIdsToBeRemoved.length > 0) {
+        await chrome.tabs.remove(tabIdsToBeRemoved.map(tabId => parseInt(tabId)));
+        await chrome.storage.session.remove(tabIdsToBeRemoved);
+    }
 }
 
 chrome.runtime.onMessage.addListener(async function (request) {
     await removeExpiredTabs(request);
 });
 
+// handle case where a tab is removed
+// maunally by a user
 chrome.tabs.onRemoved.addListener(async tadId => {
     try {
         await chrome.storage.session.remove(tadId.toString());
     } catch (error) {
-        // dont throw error
+        // dont throw error if it's an extension page or
+        // some other edge case
     }
 });
 
