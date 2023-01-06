@@ -104,3 +104,7 @@ input[type='number'] {
 [help-text]:hover:before {
     visibility: visible;
 }
+
+#debug {
+    display: none;
+}
